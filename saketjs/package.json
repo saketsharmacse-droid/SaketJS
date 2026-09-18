@@ -1,0 +1,57 @@
+{
+  "name": "saketjs",
+  "version": "0.2.0",
+  "description": "A lightweight vanilla JS library for mouse followers, magnetic buttons, image hover effects, text animations, smooth scroll, parallax, marquees, ripples and page transitions — inspired by Shery.js, zero extra imports needed.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR_USERNAME/saketjs.git"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/saketjs#readme",
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/saketjs/issues"
+  },
+  "main": "dist/saketjs.cjs.js",
+  "module": "dist/saketjs.esm.js",
+  "unpkg": "dist/saketjs.umd.js",
+  "browser": "dist/saketjs.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/saketjs.esm.js",
+      "require": "./dist/saketjs.cjs.js",
+      "default": "./dist/saketjs.umd.js"
+    },
+    "./dist/saketjs.css": "./dist/saketjs.css",
+    "./css": "./dist/saketjs.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch",
+    "prepublishOnly": "npm run build",
+    "demo": "node -e \"console.log('Open demo/index.html in your browser after running npm run build')\""
+  },
+  "keywords": [
+    "javascript",
+    "animation",
+    "cursor",
+    "mouse-follower",
+    "magnetic-button",
+    "hover-effects",
+    "text-animation",
+    "page-transition",
+    "gsap",
+    "vanilla-js"
+  ],
+  "author": "Saket",
+  "license": "MIT",
+  "dependencies": {
+    "gsap": "^3.12.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.5"
+  }
+}

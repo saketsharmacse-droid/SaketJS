@@ -1,0 +1,86 @@
+/* SaketJS base styles — import this once anywhere in your project:
+   import 'saketjs/dist/saketjs.css';               (bundler)
+   <link rel="stylesheet" href="node_modules/saketjs/dist/saketjs.css"> (no bundler)
+*/
+
+.saket-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background: var(--saket-follower-color, #ffffff);
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+.saket-follower--ring {
+  background: transparent;
+  border: 1.5px solid var(--saket-follower-color, #ffffff);
+}
+
+.saket-follower--blob {
+  filter: blur(2px);
+}
+
+/* Hides the native cursor wherever a mouse follower is active so the
+   custom follower reads clearly. Remove/override if you want both. */
+.saket-cursor-hidden,
+.saket-cursor-hidden * {
+  cursor: none !important;
+}
+
+.saket-image-hover {
+  display: inline-block;
+}
+
+.saket-image-hover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.saket-image-hover__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.saket-page-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  transform: translateY(0%);
+  pointer-events: none;
+}
+
+.saket-ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: scale(0);
+}
+
+.saket-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: inherit;
+}
+
+.saket-preloader__text {
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.saket-marquee-track {
+  will-change: transform;
+}

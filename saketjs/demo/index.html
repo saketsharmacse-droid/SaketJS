@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SaketJS — Live Demo</title>
+<link rel="stylesheet" href="../dist/saketjs.css" />
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --fg: #f4f4f4;
+    --accent: #8a7fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    overflow-x: hidden;
+  }
+  section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid #222;
+  }
+  h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 2rem; margin-bottom: 1rem; color: var(--accent); }
+  p.label { opacity: 0.6; margin-top: 2rem; font-size: 0.9rem; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  .magnet-btn {
+    padding: 1.2rem 2.4rem;
+    border-radius: 40px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--fg);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .image-grid {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .image-card {
+    width: 260px;
+    height: 320px;
+    border-radius: 12px;
+  }
+
+  .split-text {
+    font-size: 2.4rem;
+    max-width: 700px;
+  }
+  .scramble-text {
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: var(--accent);
+  }
+
+  nav.page-links a {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    margin: 0 1rem;
+  }
+</style>
+</head>
+<body>
+
+<section>
+  <h1>SaketJS</h1>
+  <p>Move your mouse around this page. Hover the button and images below.</p>
+  <p class="label">Mouse follower — type: "ring"</p>
+</section>
+
+<section>
+  <h2>Magnetic Button</h2>
+  <button class="magnet-btn" data-saket-hover>Hover near me</button>
+  <p class="label">magnet('.magnet-btn')</p>
+</section>
+
+<section>
+  <h2>Image Hover Effects</h2>
+  <div class="image-grid">
+    <div class="image-card saket-tilt-demo" style="background:#3a3a55;display:flex;align-items:center;justify-content:center;">Tilt</div>
+    <div class="image-card saket-reveal-demo" style="background:#553a55;display:flex;align-items:center;justify-content:center;">Reveal</div>
+  </div>
+  <p class="label">imageHover('.saket-tilt-demo', { type: 'tilt' })</p>
+</section>
+
+<section>
+  <h2>Text Effects</h2>
+  <p class="split-text">This heading animates itself into view, character by character, the moment it scrolls onto the screen.</p>
+  <p class="scramble-text">Hover this line to scramble it</p>
+  <p class="label">textEffect(...) — stagger + scramble</p>
+</section>
+
+<section>
+  <h2>Ripple + Parallax</h2>
+  <button class="magnet-btn saket-ripple-demo" style="margin-bottom:3rem;">Click me</button>
+  <div style="height:200px;display:flex;align-items:center;justify-content:center;">
+    <h3 class="saket-parallax-demo" style="font-size:2rem;color:var(--accent);">I drift as you scroll</h3>
+  </div>
+  <p class="label">ripple('.saket-ripple-demo') + parallax('.saket-parallax-demo')</p>
+</section>
+
+<section>
+  <h2>Marquee</h2>
+  <div class="saket-marquee-demo" style="width:100%;font-size:2.5rem;font-weight:bold;">
+    <span style="margin-right:3rem;">SAKETJS</span>
+    <span style="margin-right:3rem;">VANILLA JS EFFECTS</span>
+    <span style="margin-right:3rem;">SAKETJS</span>
+    <span style="margin-right:3rem;">VANILLA JS EFFECTS</span>
+  </div>
+  <p class="label">marquee('.saket-marquee-demo')</p>
+</section>
+
+<section>
+  <h2>Page Transition</h2>
+  <nav class="page-links">
+    <a href="index.html">Reload this page</a>
+    <a href="page-2.html">Go to Page 2</a>
+  </nav>
+  <p class="label">pageTransition()</p>
+</section>
+
+<!-- One script tag. GSAP is already bundled inside — nothing else to install or import. -->
+<script src="../dist/saketjs.umd.js"></script>
+<script>
+  Saket.mouseFollower(document.body, { type: 'ring', size: 26, hoverScale: 2 });
+  Saket.magnet('.magnet-btn', { strength: 0.6, radius: 100 });
+  Saket.imageHover('.saket-tilt-demo', { type: 'tilt', intensity: 18 });
+  Saket.imageHover('.saket-reveal-demo', { type: 'reveal', overlayColor: 'rgba(138,127,255,0.5)' });
+  Saket.textEffect('.split-text', { type: 'stagger', splitBy: 'word' });
+  Saket.textEffect('.scramble-text', { type: 'scramble' });
+  Saket.ripple('.saket-ripple-demo', { color: 'rgba(138,127,255,0.6)' });
+  Saket.parallax('.saket-parallax-demo', { speed: 0.4 });
+  Saket.marquee('.saket-marquee-demo', { speed: 80 });
+  Saket.pageTransition({ color: '#0d0d0f' });
+</script>
+</body>
+</html>
