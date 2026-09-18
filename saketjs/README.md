@@ -1,18 +1,53 @@
 # SaketJS
 
-A lightweight vanilla JS library for **mouse followers, magnetic buttons, image hover effects, text animations, and page transitions**.
+[![npm version](https://img.shields.io/npm/v/saketjs.svg)](https://www.npmjs.com/package/saketjs)
+[![npm downloads](https://img.shields.io/npm/dm/saketjs.svg)](https://www.npmjs.com/package/saketjs)
+[![license](https://img.shields.io/npm/l/saketjs.svg)](https://github.com/saketsharmacse-droid/SaketJS/blob/main/LICENSE)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/saketjs)](https://bundlephobia.com/package/saketjs)
 
-No framework required. No separate GSAP install required — it's bundled inside. One install, one import (or one `<script>` tag), you're animating.
+A lightweight vanilla JS effects library — **mouse followers, magnetic buttons, image hover effects, text animations, smooth scroll, parallax, marquees, ripples, a preloader, and multi-style page transitions** 
 
-## Installation
+No framework required. No separate GSAP install required — it's bundled inside. **One command in your terminal, one import, you're animating.**
 
 ```bash
 npm install saketjs
 ```
 
+## Quick Start
+
+```js
+import Saket from 'saketjs';
+import 'saketjs/dist/saketjs.css';
+
+Saket.mouseFollower('body', { type: 'ring' });
+Saket.magnet('.magnet-btn');
+Saket.textEffect('h1', { type: 'stagger' });
+Saket.pageTransition({ type: 'fade' });
+```
+
+That's the entire setup — GSAP is bundled inside the package itself, so `npm install saketjs` is the only install command you ever need to run. No `npm install gsap` separately, no peer dependency warnings.
+
+## Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Reference](#api-reference) — all 10 effects
+- [Building from source](#building-from-source)
+- [License](#license)
+
+## Installation
+
+Run this in your project's terminal:
+
+```bash
+npm install saketjs
+```
+
+This adds `saketjs` (and its one bundled dependency, `gsap`) to your `package.json` and downloads it into `node_modules`. You're ready to `import` it right away — see [Usage](#usage) below.
+
 ## Usage
 
-### With a bundler (Webpack / Vite / Parcel / Next.js etc.)
+### With a bundler (Webpack / Vite / Parcel / Next.js etc.) — recommended after `npm install`
 
 ```js
 import Saket from 'saketjs';
@@ -116,21 +151,41 @@ Saket.textEffect('.nav-link', { type: 'scramble' });
 
 ### 5. `Saket.pageTransition(options)`
 
-Works on plain multi-page sites — no SPA router needed. Wipes an overlay in on link click, navigates, then wipes it back out on the next page's load.
+Two ways to use it:
+
+**`mode: 'reload'` (default)** — works on any plain multi-page site, no router needed. Covers the overlay on link click, does a real navigation, then reveals it on the next page's load.
+
+**`mode: 'ajax'`** — inspired by Barba.js: instead of a full page reload, fetches the destination page's HTML and swaps just one container's contents, so your header/nav never flickers or re-initializes. Requires the *same* element, with the *same* attribute, present on every page:
+
+```html
+<!-- identical wrapper on every page of your site -->
+<main data-saket-transition-container>
+  ...page-specific content...
+</main>
+```
+```js
+Saket.pageTransition({ mode: 'ajax', type: 'slideLeft' });
+```
 
 | Option | Default | Description |
 |---|---|---|
 | `color` | `'#111111'` | Overlay color |
-| `duration` | `0.6` | Wipe animation duration in seconds |
+| `duration` | `0.6` | Animation duration in seconds |
 | `linkSelector` | `'a[href]'` | Which links trigger the transition |
+| `type` | `'wipe'` | `'wipe'` \| `'slideLeft'` \| `'slideRight'` \| `'slideUp'` \| `'slideDown'` \| `'fade'` \| `'scaleFade'` |
+| `mode` | `'reload'` | `'reload'` \| `'ajax'` |
+| `containerSelector` | `'[data-saket-transition-container]'` | Element swapped in `'ajax'` mode |
+| `onNavigate` | `null` | `'ajax'` mode only — callback fired after new content is swapped in, so you can re-run any per-page effects (`magnet`, `ripple`, etc.) on the fresh DOM |
 
 ```js
-Saket.pageTransition({ color: '#0d0d0f' });
+Saket.pageTransition({ color: '#0d0d0f', type: 'fade' });
 ```
 
-Call this once per page (near the bottom of your `<body>`), on every page of your site, so the wipe-in/wipe-out stays consistent across navigation.
+Call this once per page (near the bottom of your `<body>`), on every page of your site, so the transition stays consistent across navigation.
 
-**Note:** `saketjs.css` keeps the overlay visible by default so there's no flash of unstyled content before JS runs. This means the page assumes JavaScript is enabled; that's expected for an effects library like this.
+To skip the transition on a specific link (e.g. a download link), add `data-saket-no-transition` to it.
+
+**Note:** `saketjs.css` keeps the overlay visible by default so there's no flash of unstyled content before JS runs. This means the page assumes JavaScript is enabled; that's expected for an effects library like this. In `'ajax'` mode, remember that any Saket effects targeting elements *inside* the swapped container need to be re-initialized after navigation — use the `onNavigate` callback for that.
 
 ---
 
@@ -231,6 +286,8 @@ saketjs/
 └── build.js              # esbuild bundling script
 ```
 
+---
+
 ## Building from source
 
 ```bash
@@ -239,6 +296,12 @@ npm run build     # outputs dist/saketjs.esm.js, .cjs.js, .umd.js, .umd.min.js, 
 ```
 
 Then open `demo/index.html` directly in a browser to see every effect running.
+
+## Links
+
+- npm: [npmjs.com/package/saketjs](https://www.npmjs.com/package/saketjs)
+- GitHub: [github.com/saketsharmacse-droid/SaketJS](https://github.com/saketsharmacse-droid/SaketJS)
+- Issues / bugs: [github.com/saketsharmacse-droid/SaketJS/issues](https://github.com/saketsharmacse-droid/SaketJS/issues)
 
 ## License
 
