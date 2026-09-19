@@ -2,12 +2,16 @@ import gsap from 'gsap';
 import { resolveElements, withDefaults, markInitialized } from '../utils/dom.js';
 
 const DEFAULTS = {
-  type: 'stagger',        // 'stagger' | 'scramble'
-  splitBy: 'char',         // 'char' | 'word', used by 'stagger'
+  type: 'stagger',        // 'stagger' | 'scramble' | 'reveal3d'
+  splitBy: 'char',         // 'char' | 'word', used by 'stagger' and 'reveal3d'
   stagger: 0.03,
   duration: 0.6,
   scrambleChars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-  scrambleSpeed: 30        // ms between character flickers
+  scrambleSpeed: 30,       // ms between character flickers
+  rotateX: -90,             // starting X rotation in degrees, used by 'reveal3d'
+  rotateY: 0,                // starting Y rotation in degrees, used by 'reveal3d'
+  perspective: 600,           // px, used by 'reveal3d'
+  reverseOnLeave: true          // used by 'reveal3d' — re-hides when scrolled back past
 };
 
 function splitText(el, splitBy) {
@@ -32,6 +36,9 @@ function splitText(el, splitBy) {
  *               the first time the element scrolls into view.
  * 'scramble' -> on hover, shuffles the text through random characters
  *               before resolving back to the original text.
+ * 'reveal3d' -> splits text and reveals each unit with a 3D rotation
+ *               (rotateX/rotateY) as it scrolls into view, reversing
+ *               if it scrolls back out (unless reverseOnLeave: false).
  */
 export function textEffect(selector, options = {}) {
   const opts = withDefaults(DEFAULTS, options);
@@ -57,6 +64,49 @@ export function textEffect(selector, options = {}) {
                 ease: 'power3.out'
               });
               observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      observer.observe(el);
+      cleanups.push(() => observer.disconnect());
+    }
+
+    if (opts.type === 'reveal3d') {
+      const spans = splitText(el, opts.splitBy);
+      el.style.perspective = `${opts.perspective}px`;
+      gsap.set(spans, {
+        opacity: 0,
+        rotateX: opts.rotateX,
+        rotateY: opts.rotateY,
+        transformOrigin: '50% 100%'
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const targetSpans = entry.target.querySelectorAll('span');
+            if (entry.isIntersecting) {
+              gsap.to(targetSpans, {
+                opacity: 1,
+                rotateX: 0,
+                rotateY: 0,
+                duration: opts.duration,
+                stagger: opts.stagger,
+                ease: 'power2.inOut'
+              });
+              if (!opts.reverseOnLeave) observer.unobserve(entry.target);
+            } else if (opts.reverseOnLeave) {
+              gsap.to(targetSpans, {
+                opacity: 0,
+                rotateX: opts.rotateX,
+                rotateY: opts.rotateY,
+                duration: opts.duration * 0.7,
+                stagger: opts.stagger * 0.5,
+                ease: 'power2.in'
+              });
             }
           });
         },

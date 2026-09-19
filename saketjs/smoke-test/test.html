@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Smoke Test</title>
+<link rel="stylesheet" href="../dist/saketjs.css">
+</head>
+<body style="background:#111;color:#fff;">
+<h1 class="reveal3d-test">Testing reveal3d text</h1>
+<div class="clip-test" style="width:300px;height:100px;background:#8a7fff;">Clip title</div>
+<div class="particle-test" style="position:relative;width:400px;height:300px;background:#000;"></div>
+<img class="seq-test" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7" style="width:50px;height:50px;">
+<script src="../dist/saketjs.umd.js"></script>
+<script>
+  const results = [];
+  try { const d1 = Saket.textEffect('.reveal3d-test', { type: 'reveal3d' }); results.push('textEffect reveal3d: OK'); } catch(e) { results.push('textEffect reveal3d: FAIL - ' + e.message); }
+  try { const d2 = Saket.clipTitle('.clip-test', { shape: 'diamond', trigger: 'immediate' }); results.push('clipTitle: OK'); } catch(e) { results.push('clipTitle: FAIL - ' + e.message); }
+  try { const d3 = Saket.particleNetwork('.particle-test', { particleCount: 10 }); results.push('particleNetwork: OK'); } catch(e) { results.push('particleNetwork: FAIL - ' + e.message); }
+  try { const d4 = Saket.imageSequence('.seq-test', { images: ['a.jpg','b.jpg'], trigger: 'hover' }); results.push('imageSequence: OK'); } catch(e) { results.push('imageSequence: FAIL - ' + e.message); }
+  try { const d5 = Saket.pageTransition({ type: 'scribble' }); results.push('pageTransition scribble: OK'); } catch(e) { results.push('pageTransition scribble: FAIL - ' + e.message); }
+  document.title = results.join(' | ');
+  window.__testResults = results;
+</script>
+</body></html>

@@ -5,12 +5,28 @@ const DEFAULTS = {
   color: '#111111',
   duration: 0.6,
   linkSelector: 'a[href]',
-  type: 'wipe',       // 'wipe' | 'slideLeft' | 'slideRight' | 'slideUp' | 'slideDown' | 'fade' | 'scaleFade'
+  type: 'wipe',       // 'wipe' | 'slideLeft' | 'slideRight' | 'slideUp' | 'slideDown' | 'fade' | 'scaleFade' | 'scribble'
   mode: 'reload',     // 'reload' (full navigation) | 'ajax' (fetch + swap a container, no reload)
   containerSelector: '[data-saket-transition-container]', // only used when mode: 'ajax'
+  scribbleThickness: '250vmax', // how thick the scribble stroke grows to fully cover the screen
   onNavigate: null    // ajax mode only: fires after new content is swapped in, so you can
                        // re-run any per-page Saket effects (magnet, ripple, etc.) on it
 };
+
+// Builds a jagged, hand-drawn-feeling zigzag path spanning the
+// viewport's diagonal — used as the "scribble" transition's stroke.
+function buildScribblePath() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const points = 7;
+  let d = `M ${-w * 0.1} ${h * (0.2 + Math.random() * 0.2)}`;
+  for (let i = 1; i <= points; i++) {
+    const x = (w * 1.2 * i) / points - w * 0.1;
+    const y = h * (0.15 + Math.random() * 0.7);
+    d += ` L ${x} ${y}`;
+  }
+  return d;
+}
 
 // Each named type maps to a "covered" state and a "revealed" state for
 // the overlay. coverIn animates from revealed -> covered (before
@@ -74,40 +90,94 @@ function isInternalLink(link) {
  */
 export function pageTransition(options = {}) {
   const opts = withDefaults(DEFAULTS, options);
-  const states = getStates(opts.type);
+  const isScribble = opts.type === 'scribble';
 
-  let overlay = document.querySelector('.saket-page-overlay');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'saket-page-overlay';
-    document.body.appendChild(overlay);
-  }
-  overlay.style.background = opts.color;
+  let overlay, coverIn, revealOut;
 
-  gsap.set(overlay, states.covered);
-  gsap.to(overlay, {
-    ...states.revealed,
-    duration: opts.duration,
-    ease: 'power3.inOut'
-  });
+  if (isScribble) {
+    // A full-viewport SVG whose single path is stroked ever-thicker
+    // until it completely paints over the screen, then thinned back
+    // down to nothing to reveal the new content.
+    overlay = document.querySelector('.saket-page-overlay--scribble');
+    let path;
+    if (!overlay) {
+      const svgNS = 'http://www.w3.org/2000/svg';
+      overlay = document.createElementNS(svgNS, 'svg');
+      overlay.classList.add('saket-page-overlay', 'saket-page-overlay--scribble');
+      overlay.setAttribute('preserveAspectRatio', 'none');
+      path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      overlay.appendChild(path);
+      document.body.appendChild(overlay);
+    } else {
+      path = overlay.querySelector('path');
+    }
 
-  function coverIn(onComplete) {
-    gsap.to(overlay, {
-      ...states.covered,
-      duration: opts.duration,
-      ease: 'power3.inOut',
-      onComplete
-    });
-  }
+    function setViewport() {
+      overlay.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+    }
+    setViewport();
+    window.addEventListener('resize', setViewport);
 
-  function revealOut() {
+    path.setAttribute('stroke', opts.color);
+    path.setAttribute('d', buildScribblePath());
+    gsap.set(path, { strokeWidth: opts.scribbleThickness });
+
+    coverIn = (onComplete) => {
+      path.setAttribute('d', buildScribblePath());
+      gsap.set(path, { strokeWidth: 0 });
+      gsap.to(path, {
+        strokeWidth: opts.scribbleThickness,
+        duration: opts.duration,
+        ease: 'power2.inOut',
+        onComplete
+      });
+    };
+
+    revealOut = () => {
+      gsap.to(path, {
+        strokeWidth: 0,
+        duration: opts.duration,
+        ease: 'power2.inOut'
+      });
+    };
+  } else {
+    const states = getStates(opts.type);
+
+    overlay = document.querySelector('.saket-page-overlay:not(.saket-page-overlay--scribble)');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'saket-page-overlay';
+      document.body.appendChild(overlay);
+    }
+    overlay.style.background = opts.color;
     gsap.set(overlay, states.covered);
-    gsap.to(overlay, {
-      ...states.revealed,
-      duration: opts.duration,
-      ease: 'power3.inOut'
-    });
+
+    coverIn = (onComplete) => {
+      gsap.to(overlay, {
+        ...states.covered,
+        duration: opts.duration,
+        ease: 'power3.inOut',
+        onComplete
+      });
+    };
+
+    revealOut = () => {
+      gsap.set(overlay, states.covered);
+      gsap.to(overlay, {
+        ...states.revealed,
+        duration: opts.duration,
+        ease: 'power3.inOut'
+      });
+    };
   }
+
+  // On first load, the overlay starts fully covering the screen (set
+  // above / via CSS) so there's never a flash of unstyled content —
+  // reveal it now that SaketJS has taken over.
+  revealOut();
 
   async function swapContent(destination, pushHistory) {
     const response = await fetch(destination);

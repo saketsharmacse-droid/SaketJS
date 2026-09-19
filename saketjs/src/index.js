@@ -9,6 +9,11 @@ import { marquee } from './effects/marquee.js';
 import { ripple } from './effects/ripple.js';
 import { preloader } from './effects/preloader.js';
 import { string } from './effects/string.js';
+import { svgLoader } from './effects/svgLoader.js';
+import { counterLoader } from './effects/counterLoader.js';
+import { particleNetwork } from './effects/particleNetwork.js';
+import { clipTitle } from './effects/clipTitle.js';
+import { imageSequence } from './effects/imageSequence.js';
 
 const Saket = {
   mouseFollower,
@@ -22,7 +27,12 @@ const Saket = {
   ripple,
   preloader,
   string,
-  version: '0.4.0'
+  svgLoader,
+  counterLoader,
+  particleNetwork,
+  clipTitle,
+  imageSequence,
+  version: '0.5.0'
 };
 
 export default Saket;

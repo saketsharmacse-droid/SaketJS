@@ -92,3 +92,83 @@
 .saket-string__svg path {
   will-change: d;
 }
+
+/* svgLoader */
+.saket-svg-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.saket-svg-loader__mark {
+  position: relative;
+  z-index: 2;
+  width: 140px;
+}
+
+.saket-svg-loader__mark svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.saket-svg-loader__panels {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+}
+
+.saket-svg-loader__panel {
+  flex: 1;
+}
+
+/* counterLoader */
+.saket-counter-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  overflow: hidden;
+}
+
+.saket-counter-loader__counter {
+  position: fixed;
+  right: 6vw;
+  bottom: 6vh;
+  z-index: 2;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.saket-counter-loader__bars {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+}
+
+.saket-counter-loader__bar {
+  flex: 1;
+}
+
+/* particleNetwork */
+.saket-particle-network {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* pageTransition scribble mode */
+.saket-page-overlay--scribble {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100000;
+  pointer-events: none;
+}

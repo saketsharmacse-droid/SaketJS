@@ -135,16 +135,20 @@ Saket.imageHover('.project-thumb', { type: 'reveal', overlayColor: 'rgba(138,127
 
 | Option | Default | Description |
 |---|---|---|
-| `type` | `'stagger'` | `'stagger'` (reveal on scroll) \| `'scramble'` (shuffle on hover) |
-| `splitBy` | `'char'` | `'char'` \| `'word'` (`'stagger'` only) |
+| `type` | `'stagger'` | `'stagger'` (reveal on scroll) \| `'scramble'` (shuffle on hover) \| `'reveal3d'` (3D rotated reveal on scroll) |
+| `splitBy` | `'char'` | `'char'` \| `'word'` (`'stagger'`/`'reveal3d'` only) |
 | `stagger` | `0.03` | Delay between each unit's animation |
 | `duration` | `0.6` | Animation duration per unit |
 | `scrambleChars` | `A–Z` | Character set used while scrambling |
 | `scrambleSpeed` | `30` | ms between character flickers (`'scramble'` only) |
+| `rotateX` / `rotateY` | `-90` / `0` | Starting rotation in degrees (`'reveal3d'` only) |
+| `perspective` | `600` | px, 3D depth (`'reveal3d'` only) |
+| `reverseOnLeave` | `true` | Re-hides when scrolled back past (`'reveal3d'` only) |
 
 ```js
 Saket.textEffect('h1.headline', { type: 'stagger', splitBy: 'word' });
 Saket.textEffect('.nav-link', { type: 'scramble' });
+Saket.textEffect('h1.hero-title', { type: 'reveal3d', splitBy: 'word' });
 ```
 
 ---
@@ -172,7 +176,8 @@ Saket.pageTransition({ mode: 'ajax', type: 'slideLeft' });
 | `color` | `'#111111'` | Overlay color |
 | `duration` | `0.6` | Animation duration in seconds |
 | `linkSelector` | `'a[href]'` | Which links trigger the transition |
-| `type` | `'wipe'` | `'wipe'` \| `'slideLeft'` \| `'slideRight'` \| `'slideUp'` \| `'slideDown'` \| `'fade'` \| `'scaleFade'` |
+| `type` | `'wipe'` | `'wipe'` \| `'slideLeft'` \| `'slideRight'` \| `'slideUp'` \| `'slideDown'` \| `'fade'` \| `'scaleFade'` \| `'scribble'` |
+| `scribbleThickness` | `'250vmax'` | How thick the scribble stroke grows to fully cover the screen (`'scribble'` only) |
 | `mode` | `'reload'` | `'reload'` \| `'ajax'` |
 | `containerSelector` | `'[data-saket-transition-container]'` | Element swapped in `'ajax'` mode |
 | `onNavigate` | `null` | `'ajax'` mode only — callback fired after new content is swapped in, so you can re-run any per-page effects (`magnet`, `ripple`, etc.) on the fresh DOM |
@@ -302,6 +307,130 @@ Saket.string('.my-divider', {
 | `leaveDuration` | `0.7` | Seconds for the spring-back animation |
 
 You don't need to write any SVG yourself — SaketJS injects it into the container automatically, sized to the container's own width, and re-measures on window resize.
+
+---
+
+### 12. `Saket.svgLoader(options)`
+
+A full-screen loader built around your own logo mark: it draws your SVG's strokes in, then a set of panels wipe away to reveal the page.
+
+```js
+Saket.svgLoader({
+  svg: '<svg viewBox="0 0 134 229">...your logo markup...</svg>',
+  strokeColor: '#ffffff',
+  panelCount: 5,
+  panelColor: '#0d0d0f',
+  onComplete: () => console.log('loader done')
+});
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `svg` | `''` | Raw `<svg>...</svg>` markup for your logo/mark — required |
+| `strokeColor` | `'#ffffff'` | Color applied to the logo's strokes as they draw in |
+| `panelCount` | `5` | Number of vertical panels used for the reveal wipe |
+| `panelColor` | `'#0d0d0f'` | Panel color |
+| `background` | `'#0d0d0f'` | Loader background, behind the logo |
+| `drawDuration` | `1.2` | Seconds for the logo's strokes to draw in |
+| `holdDuration` | `0.4` | Pause after drawing, before the panels wipe |
+| `panelDuration` | `0.9` | Seconds for the panel wipe |
+| `onComplete` | `null` | Callback fired after the loader is fully removed |
+
+---
+
+### 13. `Saket.counterLoader(options)`
+
+A full-screen loader that counts up to 100% at a slightly randomized pace, then a row of bars shrinks away to reveal the page.
+
+```js
+Saket.counterLoader({
+  background: '#0d0d0f',
+  textColor: '#ffffff',
+  barCount: 8
+});
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `background` | `'#0d0d0f'` | Loader background |
+| `textColor` | `'#ffffff'` | Counter text color |
+| `fontSize` | `'5rem'` | Counter text size |
+| `barCount` | `8` | Number of reveal bars |
+| `barColor` | `'#111111'` | Bar color |
+| `minStep` / `maxStep` | `1` / `10` | Range for each random count increment |
+| `tickDelayMin` / `tickDelayMax` | `40` / `160` | ms range between count updates |
+| `barDuration` | `1.2` | Seconds for the bar reveal |
+| `onComplete` | `null` | Callback fired after the loader is fully removed |
+
+---
+
+### 14. `Saket.particleNetwork(selector, options)`
+
+A lightweight canvas "connected dots" background — no external particle library, just `<canvas>` + `requestAnimationFrame`. Particles drift and link to nearby neighbors with a line; optionally get pushed away from the cursor.
+
+```html
+<div class="hero-bg" style="position: relative; height: 100vh;"></div>
+```
+```js
+Saket.particleNetwork('.hero-bg', {
+  particleCount: 80,
+  color: '#8a7fff',
+  interactive: true
+});
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `particleCount` | `80` | Number of particles |
+| `color` | `'#8a7fff'` | Particle fill color |
+| `linkColor` | `'#8a7fff'` | Line color between nearby particles |
+| `linkDistance` | `140` | px — particles closer than this get linked |
+| `linkOpacity` | `0.25` | Max opacity of link lines |
+| `particleSize` | `2` | Particle radius in px |
+| `speed` | `0.4` | Drift speed |
+| `interactive` | `true` | Whether particles get pushed away from the cursor |
+| `repulseDistance` | `100` | px radius of the cursor's push effect |
+| `repulseStrength` | `1.5` | How hard particles get pushed |
+
+The container needs `position: relative` (or similar) and an explicit height — the canvas fills it completely via absolute positioning.
+
+---
+
+### 15. `Saket.clipTitle(selector, options)`
+
+Reveals a title or block by animating its `clip-path` open — starts as a sliver and expands to show the full element.
+
+```js
+Saket.clipTitle('.big-title', { shape: 'diamond', duration: 1 });
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `shape` | `'diamond'` | `'diamond'` \| `'rectLeft'` \| `'rectUp'` \| `'circle'` |
+| `duration` | `1` | Seconds for the reveal |
+| `ease` | `'power3.inOut'` | GSAP easing |
+| `trigger` | `'view'` | `'view'` (reveals on scroll into view) \| `'immediate'` |
+
+---
+
+### 16. `Saket.imageSequence(selector, options)`
+
+Cycles an `<img>`'s `src` through a list of images — a hero image that flickers through a sequence, or a hover-scrub product preview.
+
+```js
+Saket.imageSequence('.hero-img', {
+  images: Array.from({ length: 10 }, (_, i) => `/images/frame-${i + 1}.jpg`),
+  interval: 250,
+  trigger: 'auto'
+});
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `images` | `[]` | Array of image URLs to cycle through — required |
+| `interval` | `250` | ms between frames |
+| `trigger` | `'auto'` | `'auto'` (always cycling) \| `'hover'` (cycles only while hovered) |
+| `loop` | `true` | Whether it loops back to the first image after the last |
 
 ---
 
