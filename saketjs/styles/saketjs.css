@@ -84,3 +84,11 @@
 .saket-marquee-track {
   will-change: transform;
 }
+
+.saket-string {
+  width: 100%;
+}
+
+.saket-string__svg path {
+  will-change: d;
+}

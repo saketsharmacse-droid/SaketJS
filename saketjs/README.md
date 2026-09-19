@@ -5,7 +5,7 @@
 [![license](https://img.shields.io/npm/l/saketjs.svg)](https://github.com/saketsharmacse-droid/SaketJS/blob/main/LICENSE)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/saketjs)](https://bundlephobia.com/package/saketjs)
 
-A lightweight vanilla JS effects library — **mouse followers, magnetic buttons, image hover effects, text animations, smooth scroll, parallax, marquees, ripples, a preloader, and multi-style page transitions** 
+A lightweight vanilla JS effects library — **mouse followers, magnetic buttons, image hover effects, text animations, smooth scroll, parallax, marquees, ripples, a preloader, and multi-style page transitions** (with an optional Barba-style AJAX mode) — inspired by [Shery.js](https://github.com/aayushchouhan24/sheryjs), rebuilt smaller and simpler.
 
 No framework required. No separate GSAP install required — it's bundled inside. **One command in your terminal, one import, you're animating.**
 
@@ -269,6 +269,39 @@ Full-screen loader shown immediately on page load, fading out once the page (and
 ```js
 Saket.preloader({ text: 'LOADING', minDuration: 1 });
 ```
+
+---
+
+### 11. `Saket.string(selector, options)`
+
+Turns any empty container into a flexible "string" divider — a line that bows toward the cursor's vertical position as it moves across the container, and springs back to a flat rest position on `mouseleave`. Pure SVG + GSAP, no Three.js/WebGL involved, so it stays lightweight.
+
+```html
+<div class="my-divider"></div>
+```
+```js
+Saket.string('.my-divider', {
+  color: '#8a7fff',
+  thickness: 2,
+  height: 160,
+  strength: 1.2
+});
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `color` | `'#000000'` | Line color |
+| `thickness` | `2` | Stroke width in px |
+| `height` | `160` | Total vertical space (in px) the string is allowed to bow into |
+| `restY` | `null` | Resting Y position of the string; defaults to `height / 2` (centered) |
+| `strength` | `1` | 0–2+, how far the string bows toward the cursor — higher is more elastic/exaggerated |
+| `padding` | `10` | Horizontal inset so the string doesn't touch the container's edges |
+| `enterEase` | `'power4.out'` | Easing while the string follows the cursor |
+| `enterDuration` | `0.4` | Seconds to catch up to the cursor |
+| `leaveEase` | `'elastic.out(1, 0.4)'` | Easing for the spring-back on mouseleave |
+| `leaveDuration` | `0.7` | Seconds for the spring-back animation |
+
+You don't need to write any SVG yourself — SaketJS injects it into the container automatically, sized to the container's own width, and re-measures on window resize.
 
 ---
 

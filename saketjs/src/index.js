@@ -8,6 +8,7 @@ import { parallax } from './effects/parallax.js';
 import { marquee } from './effects/marquee.js';
 import { ripple } from './effects/ripple.js';
 import { preloader } from './effects/preloader.js';
+import { string } from './effects/string.js';
 
 const Saket = {
   mouseFollower,
@@ -20,7 +21,8 @@ const Saket = {
   marquee,
   ripple,
   preloader,
-  version: '0.3.0'
+  string,
+  version: '0.4.0'
 };
 
 export default Saket;

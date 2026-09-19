@@ -1,7 +1,7 @@
 {
   "name": "saketjs",
-  "version": "0.3.1",
-  "description": "A lightweight vanilla JS library for mouse followers, magnetic buttons, image hover effects, text animations, smooth scroll, parallax, marquees, ripples and multi-style page transitions (with an optional Barba-style AJAX mode) — inspired by Shery.js, zero extra imports needed.",
+  "version": "0.4.0",
+  "description": "A lightweight vanilla JS library for mouse followers, magnetic buttons, image hover effects, text animations, smooth scroll, parallax, marquees, ripples, a flexible string divider, and multi-style page transitions (with an optional Barba-style AJAX mode) — inspired by Shery.js, zero extra imports needed.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/saketsharmacse-droid/SaketJS.git"
